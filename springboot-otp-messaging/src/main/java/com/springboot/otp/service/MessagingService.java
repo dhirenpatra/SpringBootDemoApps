@@ -2,6 +2,7 @@ package com.springboot.otp.service;
 
 import com.springboot.otp.request.SignInRequest;
 import com.springboot.otp.request.SignUpRequest;
+import com.springboot.otp.request.VerifyOtpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,11 @@ public class MessagingService {
     public void sendSignInOtp(SignInRequest signInRequest, Calendar requestedTime){
         smsSender.sendSignInOtp(signInRequest, requestedTime);
     }
+
+    public void verifyOtp(VerifyOtpRequest verifyOtpRequest) {
+        smsSender.verifyOtp(verifyOtpRequest);
+    }
+
+
 
 }

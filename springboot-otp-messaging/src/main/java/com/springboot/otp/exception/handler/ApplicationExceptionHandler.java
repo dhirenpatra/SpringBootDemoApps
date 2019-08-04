@@ -6,10 +6,13 @@ import static com.springboot.otp.utils.ApplicationConstants.METHOD_NOT_SUPPORTED
 import static com.springboot.otp.utils.ApplicationConstants.REQUEST_FIELD_ERROR;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
 import com.springboot.otp.exception.format.Error;
+import com.springboot.otp.exception.model.InValidOtpException;
+import com.springboot.otp.exception.model.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -62,10 +66,27 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	private ErrorResponse getErrorResponse(Exception ex, HttpStatus status, String errorCode) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setErrorCode(errorCode);
-        errorResponse.setTimeOfOccureance(Instant.now());
+        errorResponse.setTimeOfOccurrence(Instant.now());
         errorResponse.setHttpStatus(status);
         return errorResponse;
     }
 
+    @ExceptionHandler(InValidOtpException.class)
+    protected ResponseEntity<Object> handleInValidOtpException(InValidOtpException ex) {
+		ErrorResponse errorResponse = getErrorResponse(ex,ex.getStatus(),ex.getErrorCode().name());
+		errorResponse.setErrors(
+				Arrays.asList(new Error(ex.getErrorCode().name(), ex.getReason()))
+		);
+		return ResponseEntity.status(ex.getStatus()).body(errorResponse);
+	}
+
+	@ExceptionHandler(UserNotFoundException.class)
+	protected ResponseEntity<Object> handleInValidOtpException(UserNotFoundException ex) {
+		ErrorResponse errorResponse = getErrorResponse(ex,ex.getStatus(),ex.getErrorCode().name());
+		errorResponse.setErrors(
+				Arrays.asList(new Error(ex.getErrorCode().name(), ex.getReason()))
+		);
+		return ResponseEntity.status(ex.getStatus()).body(errorResponse);
+	}
 
 }

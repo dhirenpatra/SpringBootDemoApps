@@ -1,29 +1,38 @@
 
 package com.springboot.otp.sender;
 
-import java.util.Calendar;
-import java.util.Random;
+import static com.springboot.otp.utils.ApplicationConstants.INVALID_OTP_ENTERED;
+import static com.springboot.otp.utils.ApplicationConstants.OTP_EXPIRED;
+import static com.springboot.otp.utils.ApplicationConstants.OTP_NOTFOUND;
+import static com.springboot.otp.utils.ApplicationConstants.USER_NOT_REGISTERED;
 
-import com.springboot.otp.exception.model.UserNotFoundException;
+import java.util.Calendar;
+
+import javax.validation.constraints.NotNull;
+
+import com.springboot.otp.utils.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.springboot.otp.config.TwilioConfig;
+import com.springboot.otp.exception.model.InValidOtpException;
+import com.springboot.otp.exception.model.UserNotFoundException;
 import com.springboot.otp.model.OtpModel;
 import com.springboot.otp.request.SignInRequest;
 import com.springboot.otp.request.SignUpRequest;
 import com.springboot.otp.request.SmsRequest;
+import com.springboot.otp.request.VerifyOtpRequest;
 import com.springboot.otp.storage.UserStorage;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
-import javax.validation.constraints.NotNull;
-
 @Service("twilio")
 public class TwilioSmsSender implements SmsSender {
 
-	private final String MSG_FORMAT = "! Your Verification code is ";
+	@Value("${otp.expiration.time}")
+	private Integer otpExpityTime;
 
 	private TwilioConfig twilioConfig;
 	private UserStorage userStorage;
@@ -48,27 +57,43 @@ public class TwilioSmsSender implements SmsSender {
 		@NotNull String phoneNumber = signUpRequest.getPhoneNumber();
 		OtpModel otpModel = generateAndSendOtp(requestedTime, phoneNumber);
 		otpModel.setEmail(signUpRequest.getEmail());
+		otpModel.setUserType(UserType.INITIAL);
 		userStorage.insertPersonDetails(phoneNumber,otpModel);
 	}
 
 	@Override
 	public void sendSignInOtp(SignInRequest signInRequest, Calendar requestedTime) {
-		OtpModel otpModel = userStorage.getPhoneNumber(signInRequest.getEmail());
-		if (otpModel != null)
-			generateAndSendOtp(requestedTime, otpModel.getPhoneNumber());
+		OtpModel otpModelRetrieved = userStorage.getPhoneNumber(signInRequest.getEmail());
+		if (otpModelRetrieved != null) {
+			OtpModel otpModel = generateAndSendOtp(requestedTime, otpModelRetrieved.getPhoneNumber());
+			otpModel.setEmail(signInRequest.getEmail());
+			otpModel.setUserType(UserType.VERIFIED);
+			userStorage.insertPersonDetails(otpModelRetrieved.getPhoneNumber(),otpModel);
+		}
 		else
 			throw new UserNotFoundException(HttpStatus.NOT_FOUND,
-				"Requested User is not found ! Please register if you are not already our user");
+				"Requested User is not found ! Please register if you are not already our user",USER_NOT_REGISTERED);
 	}
 
-	private String generateFourDigitCode() {
-		return String.format("%04d", new Random().nextInt(10000));
+	@Override
+	public void verifyOtp(VerifyOtpRequest otpRequest) {
+		OtpModel otpModel = userStorage.getPhoneNumber(otpRequest.getEmail());
+		if (otpModel != null)
+			checkOtpAreMatched(otpModel,otpRequest.getOtp());
+		else
+			throw new InValidOtpException(HttpStatus.NOT_FOUND,
+					"User otp not found",OTP_NOTFOUND);
 	}
 
-	private String greetings(Calendar calendar) {
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		int minute = calendar.get(Calendar.MINUTE);
-		return hour <= 12 && minute > 0 ? "Good Morning" : "Hello";
+	private void checkOtpAreMatched(OtpModel otpModel, String otp) {
+		if(otpModel.getExpirationTime() >= System.currentTimeMillis()) {
+			if(! otp.equals(otpModel.getOtp()))
+				throw new InValidOtpException(HttpStatus.BAD_REQUEST, "Entered OTP is incorrect", INVALID_OTP_ENTERED);
+			else
+				userStorage.findAndUpdate(otpModel.getPhoneNumber(), otp);
+		} else {
+			throw new InValidOtpException(HttpStatus.FORBIDDEN, "Entered OTP is expired", OTP_EXPIRED);
+		}
 	}
 
 	private OtpModel generateAndSendOtp(Calendar requestedTime, String phoneNumber) {
@@ -80,7 +105,7 @@ public class TwilioSmsSender implements SmsSender {
 		OtpModel otpModel = new OtpModel();
 		otpModel.setOtp(fourDigitCode);
 		otpModel.setPhoneNumber(phoneNumber);
-		otpModel.setExpirationTime(System.currentTimeMillis() + 5000);
+		otpModel.setExpirationTime(System.currentTimeMillis() + otpExpityTime);
 
 		return otpModel;
 	}

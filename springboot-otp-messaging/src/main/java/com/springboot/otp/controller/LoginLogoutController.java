@@ -6,6 +6,7 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.springboot.otp.request.VerifyOtpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,12 @@ public class LoginLogoutController {
 		                               Calendar.getInstance(httpServletRequest.getLocale()));
 
 		return ResponseEntity.status(200).body("OTP sent successfully");
+	}
+
+	@PostMapping("/verify")
+	public ResponseEntity<String> verifyOtp(@Valid @RequestBody VerifyOtpRequest verifyOtpRequest) {
+		messagingService.verifyOtp(verifyOtpRequest);
+		return ResponseEntity.status(200).body("OTP verification successful");
 	}
 
 	@PostMapping("/signin")
