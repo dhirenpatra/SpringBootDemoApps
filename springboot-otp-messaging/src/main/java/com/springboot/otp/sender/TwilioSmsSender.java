@@ -85,6 +85,14 @@ public class TwilioSmsSender implements SmsSender {
 					"User otp not found",OTP_NOTFOUND);
 	}
 
+	@Override
+	public void sendOtpMessage(String phoneNumber, String message) {
+		PhoneNumber to = new PhoneNumber(phoneNumber);
+		PhoneNumber from = new PhoneNumber(twilioConfig.getTrialNumber());
+		Message.creator(to, from, message)
+				.create();
+	}
+
 	private void checkOtpAreMatched(OtpModel otpModel, String otp) {
 		if(otpModel.getExpirationTime() >= System.currentTimeMillis()) {
 			if(! otp.equals(otpModel.getOtp()))
@@ -106,7 +114,7 @@ public class TwilioSmsSender implements SmsSender {
 		otpModel.setOtp(fourDigitCode);
 		otpModel.setPhoneNumber(phoneNumber);
 		otpModel.setExpirationTime(System.currentTimeMillis() + otpExpityTime);
-
+		sendOtpMessage(phoneNumber, message);
 		return otpModel;
 	}
 }

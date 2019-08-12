@@ -38,6 +38,4 @@ public class MessagingService {
         smsSender.verifyOtp(verifyOtpRequest);
     }
 
-
-
 }
