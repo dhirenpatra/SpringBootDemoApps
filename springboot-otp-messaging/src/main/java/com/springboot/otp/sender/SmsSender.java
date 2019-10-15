@@ -3,7 +3,6 @@ package com.springboot.otp.sender;
 import java.util.Calendar;
 import java.util.Random;
 
-import com.springboot.otp.model.OtpModel;
 import com.springboot.otp.request.SignInRequest;
 import com.springboot.otp.request.SignUpRequest;
 import com.springboot.otp.request.SmsRequest;
