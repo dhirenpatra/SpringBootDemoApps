@@ -1,0 +1,16 @@
+server:
+  port: 8888
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/KumarDhiren/scf-config-repository.git
+  application:
+    name: config-server-app
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
