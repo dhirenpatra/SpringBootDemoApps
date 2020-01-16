@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: SpringBootMessagingApp
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+
+  devtools:
+    restart:
+      trigger-file: true
+
+server:
+  port: 9090
+  use-forward-headers: false
+
+otp:
+  expiration:
+    time: 120000
+
+twilio:
+  account_sid: AC3942b9ea22a4e393479c6a6a5da58fd9
+  auth_token: 281d495ac3bffd14de634d4ba49cd2cc
+  trial_number: +12055831841
