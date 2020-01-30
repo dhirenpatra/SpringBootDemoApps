@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean name="address" class="org.dhiren.springcore.contructor.models.Address" c:city="Bangalore"
+          c:hno="102" c:stree="Mahadevpura" />
+
+    <bean class="org.dhiren.springcore.contructor.models.College" name="college" p:name="Silicon">
+        <constructor-arg >
+            <value>1202</value>
+        </constructor-arg>
+        <constructor-arg >
+            <value>"Silicon Institute of Technology"</value>
+        </constructor-arg>
+        <constructor-arg >
+            <ref bean="address" />
+        </constructor-arg>
+    </bean>
+
+    <bean class="org.dhiren.springcore.contructor.models.College" name="college-c"
+          c:id="1009923" c:name="IIT- Delhi" c:address-ref="address"/>
+
+</beans>

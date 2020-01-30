@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+    <bean name="emp" class="org.dhiren.springcore.model.Employee">
+        <property name="id" value="1"/>
+        <property name="name" value="Dhiren"/>
+    </bean>
+
+    <bean name="student" class="org.dhiren.springcore.model.Student" p:id="2" p:name="Anushka"/>
+
+    <bean name="hospital" class="org.dhiren.springcore.model.Hospital">
+        <property name="name" value="Appollo Hospitals"/>
+        <property name="departments">
+            <list>
+                <value>Orthopadic</value>
+                <value>Vision</value>
+                <value>Cardio</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean name="car-dealer" class="org.dhiren.springcore.model.CarDealer">
+        <property name="name" value="Kalinga Auto"/>
+        <property name="models">
+            <set>
+                <value>Audi</value>
+                <value>Mercedez</value>
+                <value>Honda</value>
+            </set>
+        </property>
+    </bean>
+
+    <bean name="customer" class="org.dhiren.springcore.model.Customer" p:name="Dhiren">
+        <property name="products">
+            <map>
+                <entry key="1" value="TV"></entry>
+                <entry key="2" value="Washing Machine"></entry>
+                <entry key="3">
+                    <value>"Fridge"</value>
+                </entry>
+                <entry value="iPad">
+                    <key>
+                        <value>4</value>
+                    </key>
+                </entry>
+                <entry>
+                    <key>
+                        <value>5</value>
+                    </key>
+                    <value>"MacBook Pro"</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="coaching1" class="org.dhiren.springcore.model.CoachingStudents">
+        <property name="scores" ref="scores-one" />
+    </bean>
+    <bean name="coaching2" class="org.dhiren.springcore.model.CoachingStudents">
+        <property name="scores" ref="scores-two" />
+    </bean>
+    <bean name="coaching3" class="org.dhiren.springcore.model.CoachingStudents">
+        <property name="scores" >
+            <ref bean="grade-one"/>
+        </property>
+    </bean>
+    <bean name="coaching4" class="org.dhiren.springcore.model.CoachingStudents" p:scores-ref="grade-two" />
+
+    <bean name="scores-one" id="grade-one" class="org.dhiren.springcore.model.Scores" p:english="90.45" p:math="99.5" p:science="95.6" />
+    <bean name="scores-two" id="grade-two" class="org.dhiren.springcore.model.Scores" p:english="80.45" p:math="89.5" p:science="85.6" />
+
+</beans>
