@@ -2,6 +2,7 @@ package org.dhiren.springcore.main;
 
 import org.dhiren.springcore.contructor.models.College;
 import org.dhiren.springcore.externalized.model.DBConfiguration;
+import org.dhiren.springcore.innerBeans.MyCollege;
 import org.dhiren.springcore.lifecycle.model.Patient;
 import org.dhiren.springcore.model.*;
 import org.springframework.context.ApplicationContext;
@@ -10,45 +11,42 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class TestClass {
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("config.xml");
-        ApplicationContext contextOne = new ClassPathXmlApplicationContext("patient-config.xml");
-        ApplicationContext contextTwo = new ClassPathXmlApplicationContext("college-config.xml");
-        ApplicationContext contextThree = new ClassPathXmlApplicationContext("college-config-constructor.xml");
-        ApplicationContext contextFour = new ClassPathXmlApplicationContext("db-config.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                new String[]{"config.xml", "patient-config.xml", "college-config.xml",
+                        "college-config-constructor.xml", "db-config.xml"});
         getEmployees(context);
         getStudents(context);
         getHospitals(context);
         getDealers(context);
         getCustomers(context);
         getCoachingStudents(context);
-        getPatients(contextOne);
-        getCollageInnerBean(contextTwo);
-        getCollageConstructorInjection(contextThree);
-        getDatabaseProperties(contextFour);
+        getPatients(context);
+        getCollageInnerBean(context);
+        getCollageConstructorInjection(context);
+        getDatabaseProperties(context);
     }
 
-    private static void getDatabaseProperties(ApplicationContext contextFour) {
-        DBConfiguration configuration = (DBConfiguration) contextFour.getBean("mydao");
+    private static void getDatabaseProperties(ApplicationContext context) {
+        DBConfiguration configuration = (DBConfiguration) context.getBean("mydao");
         System.out.println("DBConfiguration Bean Constructor Injection -->  " + configuration);
     }
 
-    private static void getCollageConstructorInjection(ApplicationContext contextThree) {
-        College college = (College) contextThree.getBean("college");
-        College college_c = (College) contextThree.getBean("college-c");
+    private static void getCollageConstructorInjection(ApplicationContext context) {
+        College college = (College) context.getBean("college");
+        College college_c = (College) context.getBean("college-c");
         System.out.println("College Bean Constructor Injection -->  " + college_c);
         System.out.println("College Bean Constructor Injection -->  " + college);
     }
 
-    private static void getCollageInnerBean(ApplicationContext contextTwo) {
-        org.dhiren.springcore.innerBeans.College college = (org.dhiren.springcore.innerBeans.College)
-                contextTwo.getBean("college");
+    private static void getCollageInnerBean(ApplicationContext context) {
+        MyCollege college = (MyCollege) context.getBean("mycollege");
         System.out.println("College Bean -->  " + college);
     }
 
-    private static void getPatients(ApplicationContext contextOne) {
-        Patient patient = (Patient) contextOne.getBean("patient");
+    private static void getPatients(ApplicationContext context) {
+        Patient patient = (Patient) context.getBean("patient");
         System.out.println("Patient Bean -->  " + patient.getId());
-        AbstractApplicationContext applicationContext = (AbstractApplicationContext) contextOne;
+        AbstractApplicationContext applicationContext = (AbstractApplicationContext) context;
         applicationContext.registerShutdownHook();
     }
 

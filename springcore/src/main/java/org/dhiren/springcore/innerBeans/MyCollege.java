@@ -1,6 +1,6 @@
 package org.dhiren.springcore.innerBeans;
 
-public class College {
+public class MyCollege {
     private int id;
     private String name;
     private Address address;

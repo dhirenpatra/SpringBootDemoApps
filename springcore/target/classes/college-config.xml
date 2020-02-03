@@ -8,7 +8,7 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean class="org.dhiren.springcore.innerBeans.College" name="college" p:id="1009923" p:name="Silicon">
+    <bean class="org.dhiren.springcore.innerBeans.MyCollege" name="mycollege" p:id="1009923" p:name="Silicon">
         <property name="address">
             <bean class="org.dhiren.springcore.innerBeans.Address" p:city="Bangalore"
                     p:hno="102" p:stree="Mahadevpura" />
