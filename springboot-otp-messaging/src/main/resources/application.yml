@@ -3,12 +3,14 @@ spring:
     name: SpringBootMessagingApp
   data:
     mongodb:
-      host: localhost
-      port: 27017
-
+      uri: mongodb://dhiren:dhiren13@ds251894.mlab.com:51894/mydemodb
   devtools:
     restart:
       trigger-file: true
+#  security:
+#    user:
+#      name: dhiren
+#      password: November@13
 
 server:
   port: 9090

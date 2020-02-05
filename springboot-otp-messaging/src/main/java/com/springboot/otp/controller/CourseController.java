@@ -2,11 +2,7 @@ package com.springboot.otp.controller;
 
 import com.springboot.otp.repository.CourseRepository;
 import com.springboot.otp.request.Course;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,8 +22,13 @@ public class CourseController {
         return repository.findAll();
     }
 
-    @PostMapping("/courses")
+    @PostMapping("/courses/course")
     public Course addCourse(@Valid @RequestBody final Course course) {
         return repository.save(course);
+    }
+
+    @DeleteMapping("/courses")
+    public void deleteAllCourses() {
+        repository.deleteAll();
     }
 }
