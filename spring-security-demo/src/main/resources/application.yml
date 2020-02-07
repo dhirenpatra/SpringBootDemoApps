@@ -1,0 +1,25 @@
+spring:
+  devtools:
+    livereload:
+      enabled: on
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: security-demo
+
+  cloud:
+    stream:
+      default:
+        contentType: application/json
+      bindings:
+        authorRegistrationChannel:
+          destination: authorRegistration
+      default-binder: 'rabbit'
+  security:
+    user:
+      name: dhiren
+      password: dhiren
+      roles: 'ADMIN'
+server:
+  port: 9090
