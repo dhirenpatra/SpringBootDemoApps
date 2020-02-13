@@ -10,8 +10,8 @@ import static org.dhiren.main.future.utils.CallExternal.sleepForSometime;
 public class CompletableFutureDemo {
     public static void main(String[] args) {
 
-        //basicGetTheNumber();
-        //basicRunTheProceess();
+        basicGetTheNumber();
+        basicRunTheProceess();
         chainingMultipleCalls();
 
     }
