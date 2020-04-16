@@ -6,11 +6,14 @@ package com.dhiren.springboot.mongodb.query;
 
 import com.dhiren.springboot.mongodb.constants.FlightType;
 import com.dhiren.springboot.mongodb.entity.FlightInformation;
+import com.mongodb.client.result.UpdateResult;
+import org.bson.BsonValue;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,7 +80,7 @@ public class FlightInformationQueries {
      * @param departure
      * @return
      */
-    public List<FlightInformation> findByDestinationCity(String departure) {
+    public List<FlightInformation> findByDepartureCity(String departure) {
         System.err.println("Requested Departure city is "+departure);
         return mongoTemplate.find(Query.query(Criteria.where("departure").is(departure)),FlightInformation.class);
     }
@@ -134,6 +137,19 @@ public class FlightInformationQueries {
     public List<FlightInformation> findFlightsByModel(String model) {
         System.err.println("Requested flight model is "+model);
        return mongoTemplate.find(Query.query(Criteria.where("aircraft.model").is(model)),FlightInformation.class);
+    }
+
+    /**
+     * Update status of all flights for a particular destination
+     *
+     * @param destination
+     * @param status
+     */
+    public List<FlightInformation> updateStatusOfFlightsTo(String destination, boolean status) {
+        Query query = Query.query(Criteria.where("destination").is(destination));
+        Update update = Update.update("isDelayed",status);
+        mongoTemplate.updateMulti(query, update, FlightInformation.class).getUpsertedId();
+        return mongoTemplate.find(Query.query(Criteria.where("destination").is(destination)),FlightInformation.class);
     }
 
 }
