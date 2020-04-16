@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Self learning and applying project advanced concepts through out.
+ */
+
 package com.dhiren.springboot.mongodb.query;
 
 import com.dhiren.springboot.mongodb.constants.FlightType;
@@ -19,17 +23,6 @@ public class FlightInformationQueries {
     public FlightInformationQueries(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
-
-    /**
-     * TODO : Implement following queries
-     *
-     *
-     *  Find all flights by departure city
-     *  Find all flights between duration min and max
-     *  Find all flights delayed at a particular departure city
-     *  Find all flights on time at a particular city
-     *  Find by aircraft model
-     */
 
     /**
      * Find All flights with paging and sorting
@@ -77,4 +70,70 @@ public class FlightInformationQueries {
                 new Query(Criteria.where("flightType").is(type.toString())),
                 FlightInformation.class);
     }
+
+    /**
+     * Find all flights by departure city
+     *
+     * @param departure
+     * @return
+     */
+    public List<FlightInformation> findByDestinationCity(String departure) {
+        System.err.println("Requested Departure city is "+departure);
+        return mongoTemplate.find(Query.query(Criteria.where("departure").is(departure)),FlightInformation.class);
+    }
+
+    /**
+     * Find all flights between duration min and max
+     *
+     * @param minDuration
+     * @param maxDuration
+     * @return
+     */
+    public List<FlightInformation> findByDurationBetween(int minDuration, int maxDuration) {
+        System.err.println("All flight between "+minDuration+ " and "+maxDuration+" duration..");
+         return mongoTemplate.find(Query.query(Criteria.where("durationMin").gte(minDuration).lte(maxDuration))
+                .with(Sort.by(Sort.Direction.ASC,"durationMin")),FlightInformation.class);
+    }
+
+    /**
+     * Find all flights delayed at a particular departure city
+     *
+     * @param city
+     * @return
+     */
+    public List<FlightInformation> findFlightsDelayedAtACity(String city) {
+        System.err.println("Requested Departure city is "+city+ " with delayed flights.");
+        return mongoTemplate.find(Query.query(Criteria.where("departure").is(city)
+                .and("isDelayed").is(true)),FlightInformation.class);
+    }
+
+    /**
+     * Find all flights on time at a particular city
+     *
+     * @param city
+     * @return
+     */
+    public List<FlightInformation> findFlightsOnTimeAndRelatedToCity(String city) {
+
+        System.err.println("Requested city is "+city+ " with on time flights to and fro .");
+
+        Query query = Query.query(new Criteria().orOperator(
+                Criteria.where("departure").is(city),
+                Criteria.where("destination").is(city)
+        ).andOperator(Criteria.where("isDelayed").is(false)));
+
+        return mongoTemplate.find(query,FlightInformation.class);
+    }
+
+    /**
+     * Find by aircraft model
+     *
+     * @param model
+     * @return
+     */
+    public List<FlightInformation> findFlightsByModel(String model) {
+        System.err.println("Requested flight model is "+model);
+       return mongoTemplate.find(Query.query(Criteria.where("aircraft.model").is(model)),FlightInformation.class);
+    }
+
 }

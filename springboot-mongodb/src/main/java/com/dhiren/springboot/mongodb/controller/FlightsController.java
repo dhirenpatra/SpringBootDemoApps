@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Self learning and applying project advanced concepts through out.
+ */
+
 package com.dhiren.springboot.mongodb.controller;
 
 import com.dhiren.springboot.mongodb.constants.FlightType;
@@ -44,6 +48,31 @@ public class FlightsController {
                 : FlightType.DOMESTIC;
 
         return flightInformations.getFlightCategoryCount(type);
+    }
+
+    @GetMapping("/departure")
+    public List<FlightInformation> getAllFlightsByDepartureCity(@RequestParam String city) {
+       return flightInformations.findByDestinationCity(city);
+    }
+
+    @GetMapping("/duration")
+    public List<FlightInformation> getAllFlightsWithinDurationOf(@RequestParam int min, @RequestParam int max) {
+        return flightInformations.findByDurationBetween(min, max);
+    }
+
+    @GetMapping("/flights/delayed")
+    public List<FlightInformation> getAllFlightsDelayedFromDepartureCity(@RequestParam String city) {
+        return flightInformations.findFlightsDelayedAtACity(city);
+    }
+
+    @GetMapping("/flights/timely")
+    public List<FlightInformation> getAllFlightsOnTimeFromACity(@RequestParam String city) {
+        return flightInformations.findFlightsOnTimeAndRelatedToCity(city);
+    }
+
+    @GetMapping("/flights")
+    public List<FlightInformation> getAllFlightsOfModel(@RequestParam String model) {
+        return flightInformations.findFlightsByModel(model);
     }
 
 }
