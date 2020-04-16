@@ -7,38 +7,43 @@ package com.dhiren.springboot.mongodb.controller;
 import com.dhiren.springboot.mongodb.constants.FlightType;
 import com.dhiren.springboot.mongodb.entity.FlightInformation;
 import com.dhiren.springboot.mongodb.query.FlightInformationQueries;
+import com.dhiren.springboot.mongodb.repository.AirportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
-public class FlightsController {
+@RequestMapping("/api/v1")
+public class FlightsControllerV1 {
 
-    private FlightInformationQueries flightInformations;
+    private AirportRepository airportRepository;
 
     @Autowired
-    public FlightsController(FlightInformationQueries flightInformationQueries) {
-        this.flightInformations = flightInformationQueries;
+    public FlightsControllerV1(AirportRepository airportRepository) {
+        this.airportRepository = airportRepository;
     }
 
     @GetMapping("/all/{sortOrder}")
     public List<FlightInformation> getAllFlights(@RequestParam String field, @RequestParam int pageNo,
                                                  @RequestParam int pageSize, @PathVariable String sortOrder) {
         Sort.Direction sortingOrder  = sortOrder.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return flightInformations.getAllFlightsSortedByDistance(field,pageNo,pageSize, sortingOrder);
+        return airportRepository.findAll(PageRequest.of(pageNo,pageSize,sortingOrder,field)).toList();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FlightInformation> getFlight(@PathVariable String id) {
-        final FlightInformation flightById = flightInformations.getFlightById(id);
+        final Optional<FlightInformation> flightById = airportRepository.findById(id);
 
-        return flightById == null ?
+        return ! flightById.isPresent() ?
                 ResponseEntity.notFound().build() :
-                ResponseEntity.ok(flightById);
+                ResponseEntity.ok(flightById.get());
     }
 
     @GetMapping("/type/{flightType}")
@@ -47,38 +52,40 @@ public class FlightsController {
         FlightType type = flightType.equalsIgnoreCase("international") ? FlightType.INTERNATIONAL
                 : FlightType.DOMESTIC;
 
-        return flightInformations.getFlightCategoryCount(type);
+        return airportRepository.findByFlightTypeEquals(type).size();
     }
 
     @GetMapping("/departure")
     public List<FlightInformation> getAllFlightsByDepartureCity(@RequestParam String city) {
-       return flightInformations.findByDepartureCity(city);
+       return airportRepository.findByDepartureCity(city);
     }
 
     @GetMapping("/duration")
     public List<FlightInformation> getAllFlightsWithinDurationOf(@RequestParam int min, @RequestParam int max) {
-        return flightInformations.findByDurationBetween(min, max);
+        return airportRepository.findByDurationMinBetweenOrderByDurationMinAsc(min, max);
     }
 
     @GetMapping("/flights/delayed")
     public List<FlightInformation> getAllFlightsDelayedFromDepartureCity(@RequestParam String city) {
-        return flightInformations.findFlightsDelayedAtACity(city);
+        return airportRepository.findByDepartureCityAndIsDelayedTrue(city);
     }
 
     @GetMapping("/flights/timely")
     public List<FlightInformation> getAllFlightsOnTimeFromACity(@RequestParam String city) {
-        return flightInformations.findFlightsOnTimeAndRelatedToCity(city);
+        return airportRepository.findByDepartureCityOrDestinationCityAndIsDelayedFalse(city,city)
+                .stream().filter(flightInformation -> flightInformation.isDelayed() == false)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/flights")
     public List<FlightInformation> getAllFlightsOfModel(@RequestParam String model) {
-        return flightInformations.findFlightsByModel(model);
+        return airportRepository.findFlightsByModel(model);
     }
 
     @PutMapping("/flights")
     public List<FlightInformation> updateAllFlightsStatus(@RequestParam String destination,
                                                           @RequestParam boolean status) {
-        return flightInformations.updateStatusOfFlightsTo(destination, status);
+        return airportRepository.updateStatusOfFlightsOf(destination, status);
     }
 
 }
