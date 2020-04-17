@@ -22,13 +22,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Document("flights")
-public class FlightInformation extends AbstractFlightInformation {
+@Document("flights-r/w-converted")
+public class FlightInformationV1 extends AbstractFlightInformation {
 
-    private Aircraft aircraft;
+    private AircraftV1 aircraft;
 
-    public FlightInformation(String departureCity, String destinationCity, FlightType flightType,
-                             boolean isDelayed, int durationMin, LocalDate departureDate, Aircraft aircraft) {
+    public FlightInformationV1(String departureCity, String destinationCity, FlightType flightType,
+                               boolean isDelayed, int durationMin, LocalDate departureDate, AircraftV1 aircraft) {
         super(departureCity,destinationCity,flightType,isDelayed,durationMin,departureDate);
         this.aircraft = aircraft;
     }
