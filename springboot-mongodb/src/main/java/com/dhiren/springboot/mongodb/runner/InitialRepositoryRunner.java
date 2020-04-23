@@ -5,7 +5,8 @@
 package com.dhiren.springboot.mongodb.runner;
 
 import com.dhiren.springboot.mongodb.repository.AirportRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dhiren.springboot.mongodb.repository.FlightRepository;
+import com.dhiren.springboot.mongodb.repository.FlightDetailsRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,22 @@ import org.springframework.stereotype.Component;
 @Order(1)
 public class InitialRepositoryRunner implements CommandLineRunner {
 
-    private AirportRepository repository;
+    private FlightRepository flightRepository;
+    private AirportRepository airportRepository;
+    private FlightDetailsRepository flightDetailsRepository;
 
-    @Autowired
-    public InitialRepositoryRunner(AirportRepository repository) {
-        this.repository = repository;
+    public InitialRepositoryRunner(FlightRepository flightRepository, AirportRepository airportRepository,
+                                   FlightDetailsRepository flightDetailsRepository) {
+        this.flightRepository = flightRepository;
+        this.airportRepository = airportRepository;
+        this.flightDetailsRepository = flightDetailsRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        this.repository.deleteAll();
+        this.flightRepository.deleteAll();
+        this.airportRepository.deleteAll();
+        this.flightDetailsRepository.deleteAll();
         System.err.println("Application Started... And InitialRepositoryRunner executed..");
     }
 

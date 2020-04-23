@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import java.util.Arrays;
 
-//@Configuration
+@Configuration
 public class MongoConfig {
 
     @Bean

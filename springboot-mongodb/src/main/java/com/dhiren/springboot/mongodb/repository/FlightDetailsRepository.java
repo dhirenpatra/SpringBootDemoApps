@@ -5,7 +5,7 @@
 package com.dhiren.springboot.mongodb.repository;
 
 import com.dhiren.springboot.mongodb.constants.FlightType;
-import com.dhiren.springboot.mongodb.entity.Airport;
+import com.dhiren.springboot.mongodb.entity.FlightDetails;
 import com.dhiren.springboot.mongodb.entity.FlightInformation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -15,6 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public interface AirportRepository extends MongoRepository<Airport,String> {
+public interface FlightDetailsRepository extends MongoRepository<FlightDetails,String> {
 
 }

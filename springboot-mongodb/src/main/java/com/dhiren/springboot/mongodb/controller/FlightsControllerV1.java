@@ -6,11 +6,9 @@ package com.dhiren.springboot.mongodb.controller;
 
 import com.dhiren.springboot.mongodb.constants.FlightType;
 import com.dhiren.springboot.mongodb.entity.FlightInformation;
-import com.dhiren.springboot.mongodb.query.FlightInformationQueries;
-import com.dhiren.springboot.mongodb.repository.AirportRepository;
+import com.dhiren.springboot.mongodb.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +21,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1")
 public class FlightsControllerV1 {
 
-    private AirportRepository airportRepository;
+    private FlightRepository airportRepository;
 
     @Autowired
-    public FlightsControllerV1(AirportRepository airportRepository) {
+    public FlightsControllerV1(FlightRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
 
