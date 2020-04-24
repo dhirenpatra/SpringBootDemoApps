@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class MongoConfig {
 
     @Bean
-    public MongoCustomConversions customConversions() {
+    public MongoCustomConversions mongoCustomConversions() {
 
         return new MongoCustomConversions(
                 Arrays.asList(new MongoReadConverter(), new MongoWriteConverter())
