@@ -7,13 +7,13 @@ package com.dhiren.springboot.mongodbdemo.mongo.config;
 import com.dhiren.springboot.mongodbdemo.mongo.entity.Address;
 import org.springframework.core.convert.converter.Converter;
 
-public class MongoReadConverter implements Converter<String, Address> {
+import static com.dhiren.springboot.mongodbdemo.mongo.constants.AppConstants.DELIMITER;
 
-    private static final String DELIMITER = " of ";
+public class MongoReadConverter implements Converter<String, Address> {
 
     @Override
     public Address convert(String aircraft) {
-        String[] strings = aircraft.split(DELIMITER);
+        String[] strings = aircraft.split(DELIMITER.getType());
         return new Address(strings[0], strings[1]);
     }
 

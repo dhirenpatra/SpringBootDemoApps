@@ -4,16 +4,17 @@
 
 package com.dhiren.springboot.mongodbdemo.mongo.config;
 
+import com.dhiren.springboot.mongodbdemo.mongo.constants.AppConstants;
 import com.dhiren.springboot.mongodbdemo.mongo.entity.Address;
 import org.springframework.core.convert.converter.Converter;
 
-public class MongoWriteConverter implements Converter<Address, String> {
+import static com.dhiren.springboot.mongodbdemo.mongo.constants.AppConstants.*;
 
-    private static final String DELIMITER = " of ";
+public class MongoWriteConverter implements Converter<Address, String> {
 
     @Override
     public String convert(Address aircraft) {
-        return aircraft.getCity() + DELIMITER +aircraft.getCountry();
+        return aircraft.getCity() + DELIMITER.getType() +aircraft.getCountry();
     }
 
 }
