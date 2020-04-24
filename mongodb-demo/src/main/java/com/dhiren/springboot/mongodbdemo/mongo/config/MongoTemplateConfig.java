@@ -5,11 +5,12 @@
 package com.dhiren.springboot.mongodbdemo.mongo.config;
 
 import com.dhiren.springboot.mongodbdemo.mongo.app.MultipleClientConfig;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.connection.ServerSettings;
+import com.mongodb.connection.SslSettings;
+import com.mongodb.event.ServerListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import java.util.Arrays;
 
+import static com.dhiren.springboot.mongodbdemo.mongo.constants.AppConstants.*;
+
 @Configuration
 @EnableMongoRepositories(basePackages = "com.dhiren.springboot.mongodbdemo.mongo.repo")
 public class MongoTemplateConfig extends AbstractMongoClientConfiguration {
@@ -36,26 +39,29 @@ public class MongoTemplateConfig extends AbstractMongoClientConfiguration {
         this.clientConfig = clientConfig;
     }
 
+    private static void apply(SslSettings.Builder builder) {
+        builder.applySettings(SslSettings.builder().enabled(false).build());
+    }
+
     @Override
     public MongoClient mongoClient() {
 
         MongoCredential credential = MongoCredential.createCredential(
-                "dhiren", getDatabaseName(), "zxcvbnm".toCharArray());
-
-        MongoClientOptions options = new MongoClientOptions.Builder().sslEnabled(false).build();
+                USERNAME.getType(), getDatabaseName(), PASSWORD.getType().toCharArray());
 
         return MongoClients.create(MongoClientSettings.builder()
+                .applyToSslSettings(MongoTemplateConfig::apply)
                 .credential(credential)
                 .build());
     }
 
     @Override
     protected String getDatabaseName() {
-        return "mongodemo";
+        return DATABASE_NAME.getType();
     }
 
     @Bean public MongoTemplate mongoTemplate() {
-        final Index index = new Index("expiryTime", Sort.Direction.DESC);
+        final Index index = new Index(TTL_COLUMN.getType(), Sort.Direction.DESC);
         final MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
 
         clientConfig.getClients().forEach(client -> {
@@ -63,9 +69,9 @@ public class MongoTemplateConfig extends AbstractMongoClientConfiguration {
             mongoTemplate.indexOps(client.getCollection()).ensureIndex(index);
         });
 
-        MappingMongoConverter mmc = (MappingMongoConverter) mongoTemplate.getConverter();
-        mmc.setCustomConversions(this.mongoCustomConversions());
-        mmc.afterPropertiesSet();
+        MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
+        converter.setCustomConversions(this.mongoCustomConversions());
+        converter.afterPropertiesSet();
 
         return mongoTemplate;
     }

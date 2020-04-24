@@ -1,7 +1,7 @@
 package com.dhiren.springboot.mongodbdemo.mongo.services;
 
 import com.dhiren.springboot.mongodbdemo.mongo.entity.AppEntity;
-import com.dhiren.springboot.mongodbdemo.mongo.runner.PropertyInitializer;
+import com.dhiren.springboot.mongodbdemo.mongo.initializer.PropertyInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.dhiren.springboot.mongodbdemo.mongo.runner;
+package com.dhiren.springboot.mongodbdemo.mongo.initializer;
 
 import com.dhiren.springboot.mongodbdemo.mongo.app.MultipleClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
