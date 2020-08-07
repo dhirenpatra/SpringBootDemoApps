@@ -13,3 +13,22 @@ spring:
 
 server:
   port: 8180
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+
+
+my:
+  clients:
+    - name: Google
+      ttl: 150
+      collection: google_collection
+    - name: Facebook
+      ttl: 200
+      collection: fb_collection

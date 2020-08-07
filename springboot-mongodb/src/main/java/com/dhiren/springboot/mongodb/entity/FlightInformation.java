@@ -23,43 +23,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Document("flights")
-public class FlightInformation {
-
-    @Id
-    private String id;
-
-    @Indexed(unique = true)
-    private String internalId = UUID.randomUUID().toString();
-
-    @Field("departure")
-    @Indexed
-    private String departureCity;
-
-    @Field("destination")
-    @Indexed
-    private String destinationCity;
-
-    private FlightType flightType;
-
-    private boolean isDelayed;
-
-    private int durationMin;
-
-    private LocalDate departureDate;
+public class FlightInformation extends AbstractFlightInformation {
 
     private Aircraft aircraft;
 
-    @Transient
-    private LocalDate createdAt = LocalDate.now();
-
     public FlightInformation(String departureCity, String destinationCity, FlightType flightType,
                              boolean isDelayed, int durationMin, LocalDate departureDate, Aircraft aircraft) {
-        this.departureCity = departureCity;
-        this.destinationCity = destinationCity;
-        this.flightType = flightType;
-        this.isDelayed = isDelayed;
-        this.durationMin = durationMin;
-        this.departureDate = departureDate;
+        super(departureCity,destinationCity,flightType,isDelayed,durationMin,departureDate);
         this.aircraft = aircraft;
     }
 

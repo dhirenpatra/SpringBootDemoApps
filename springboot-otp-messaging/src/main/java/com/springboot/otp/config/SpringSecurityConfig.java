@@ -33,9 +33,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         System.err.println("Called HttpSecurity");
         http.authorizeRequests()
-                .antMatchers(HttpMethod.DELETE, "/*").hasRole("ADMIN")
                 .antMatchers( "/courses").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/").permitAll();
+                .antMatchers( HttpMethod.DELETE,"/courses").hasRole("ADMIN")
+
+                .and().formLogin().disable();
     }
 
 }

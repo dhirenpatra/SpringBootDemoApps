@@ -52,7 +52,7 @@ public class FlightsController {
 
     @GetMapping("/departure")
     public List<FlightInformation> getAllFlightsByDepartureCity(@RequestParam String city) {
-       return flightInformations.findByDestinationCity(city);
+       return flightInformations.findByDepartureCity(city);
     }
 
     @GetMapping("/duration")
@@ -73,6 +73,12 @@ public class FlightsController {
     @GetMapping("/flights")
     public List<FlightInformation> getAllFlightsOfModel(@RequestParam String model) {
         return flightInformations.findFlightsByModel(model);
+    }
+
+    @PutMapping("/flights")
+    public List<FlightInformation> updateAllFlightsStatus(@RequestParam String destination,
+                                                          @RequestParam boolean status) {
+        return flightInformations.updateStatusOfFlightsTo(destination, status);
     }
 
 }
