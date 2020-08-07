@@ -1,0 +1,45 @@
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mongodemo
+
+  devtools:
+    livereload:
+      enabled: on
+    restart:
+      enabled: true
+
+server:
+  port: 8190
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+
+my:
+  clients:
+    - name: Google
+      ttl: 15
+      collection: google_collection
+    - name: Facebook
+      ttl: 20
+      collection: fb_collection
+    - name: Microsoft
+      ttl: 25
+      collection: microsoft_collection
+    - name: Amazon
+      ttl: 10
+      collection: amazon_collection
+    - name: Apple
+      ttl: 15
+    - name: Anthem
+      ttl: 15
+      collection: anthem_collection
